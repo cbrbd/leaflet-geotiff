@@ -310,6 +310,10 @@ L.LeafletGeotiff = L.ImageOverlay.extend({
             ctx.globalCompositeOperation = 'destination-out';
             ctx.drawImage(mask, 0, 0);
 
+            if (typeof this.options.onImageReady === ' function') {
+                this.options.onImageReady(ctx.getImageData(0,0, size.x, size.y));
+            }
+
             this._image.src = String(plotCanvas.toDataURL());
         }
     },
