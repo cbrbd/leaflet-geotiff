@@ -85,6 +85,10 @@ L.LeafletGeotiff = L.ImageOverlay.extend({
         this._map = map;
         if (!this._image) {
             this._initImage();
+            if (this.options.interactive) {
+                L.DomUtil.addClass(this._image, 'leaflet-interactive');
+                this.addInteractiveTarget(this._image);
+            }
         }
 
         map._panes.overlayPane.appendChild(this._image);
