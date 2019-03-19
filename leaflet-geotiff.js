@@ -209,9 +209,15 @@ L.LeafletGeotiff = L.ImageOverlay.extend({
     },
     getValueAtLatLng: function (lat, lng) {
         try {
-            var x = Math.floor(this.raster.width*(lng - this._rasterBounds._southWest.lng)/(this._rasterBounds._northEast.lng - this._rasterBounds._southWest.lng));
-            var y = this.raster.height-Math.ceil(this.raster.height*(lat - this._rasterBounds._southWest.lat)/(this._rasterBounds._northEast.lat - this._rasterBounds._southWest.lat));
-            var i = y*this.raster.width+x;
+            var lngSpan = (this._rasterBounds._northEast.lng - this._rasterBounds._southWest.lng) / this.raster.width;
+            var latSpan = (this._rasterBounds._northEast.lat - this._rasterBounds._southWest.lat) / this.raster.height;
+            var topLeft = this._rasterBounds.getNorthWest();
+            var x = Math.ceil((lng - topLeft.lng) / lngSpan);
+            var y = Math.ceil((topLeft.lat - lat) / latSpan);
+            if (x < 0 || y < 0 || x > this.raster.width || y > this.raster.height) {
+                return undefined;
+            }
+            var i = y * this.raster.width + x;
             return this.raster.data[0][i];
         }
         catch(err) {
